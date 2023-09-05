@@ -2,8 +2,8 @@ import supabase from '../../config/supabaseClient.js';
 
 async function getFormId(TIN, assessmentYear) {
 	// test-1
-	TIN = "123456789012"
-	assessmentYear = "2045-20"
+	// TIN = "123456789012"
+	// assessmentYear = "2045-20"
 
 	const { data, error } = await supabase
 		.from('taxForm')
