@@ -47,7 +47,38 @@ async function registerUser(NID, TIN, name, dateOfBirth, taxZone, presentAddress
 	}
 }
 
+async function updateBasicInfo(NID, TIN, name, dateOfBirth, taxZone, presentAddress, permanentAddress,
+	taxCircle, username, gender, password, maritalStatus) {
+	// test-1
+	const { data, error } = await supabase
+		.from('TaxPayer')
+		.update({
+			'NID': NID,
+			'TIN': TIN,
+			'name': name,
+			'dateOfBirth': dateOfBirth,
+			'taxZone': taxZone,
+			'presentAddress': presentAddress,
+			'permanentAddress': permanentAddress,
+			'taxCircle': taxCircle,
+			'gender': gender,
+			'password': password,
+			'maritalStatus': maritalStatus
+		})
+		.eq('username', username)
+		.select()
+
+	if (error) {
+		console.log(error);
+		throw new Error("Basic info could not be updated");
+	} else {
+		console.log(data);
+		return data;
+	}
+}
+
 module.exports = {
 	getLoginUser,
-	registerUser
+	registerUser,
+	updateBasicInfo
 }
