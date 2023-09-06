@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd VeriTax-FrontEnd
-bash commands.md
+bash ../commands.md
 
 npm run build
 
