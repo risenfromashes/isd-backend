@@ -30,6 +30,21 @@ async function registerUser(username, password) {
 	let permanentAddress = presentAddress
 	let taxCircle = 0
 	let gender = ""
+
+	{
+		const { data, error } = await supabase
+			.from('TaxPayer')
+			.select('taxPayerID,name')
+			.eq('username', username)
+		
+		if (error) {
+			console.log(error);
+			throw new Error("Couldn't query table");
+		} else if (data.length > 0){
+			throw new Error("Username taken");
+		}
+	}
+
 	const { data, error } = await supabase
 		.from('TaxPayer')
 		.insert([{
@@ -45,25 +60,43 @@ async function registerUser(username, password) {
 	}
 }
 
-async function updateBasicInfo(NID, TIN, name, dateOfBirth, taxZone, presentAddress, permanentAddress,
-	taxCircle, username, gender, password, maritalStatus) {
+async function getBasicInfo(id) {
+	// test-1
+	const { data, error } = await supabase
+		.from('TaxPayer')
+		.select('NID,TIN,name,contactNumber,dateOfBirth,taxZone,presentAddress,permanentAddress,taxCircle,gender,maritalStatus')
+		.eq('taxPayerID', id)
+
+	if (error) {
+		console.log(error);
+		throw new Error("Basic info could not be fetched");
+	} else if (data.length == 0) {
+		throw new Error("No such user");
+	} else {
+		console.log(data);
+		return data[0];
+	}
+}
+
+async function updateBasicInfo(id, fullname, tin, nid, contactNumber, gender, dateOfBirth, presentAddress,
+							   permanentAddress, taxZone, taxCircle, maritalStatus) {
 	// test-1
 	const { data, error } = await supabase
 		.from('TaxPayer')
 		.update({
-			'NID': NID,
-			'TIN': TIN,
-			'name': name,
+			'NID': nid,
+			'TIN': tin,
+			'name': fullname,
+			'contactNumber': contactNumber,
 			'dateOfBirth': dateOfBirth,
 			'taxZone': taxZone,
 			'presentAddress': presentAddress,
 			'permanentAddress': permanentAddress,
 			'taxCircle': taxCircle,
 			'gender': gender,
-			'password': password,
 			'maritalStatus': maritalStatus
 		})
-		.eq('username', username)
+		.eq('taxPayerID', id)
 		.select()
 
 	if (error) {
@@ -71,12 +104,13 @@ async function updateBasicInfo(NID, TIN, name, dateOfBirth, taxZone, presentAddr
 		throw new Error("Basic info could not be updated");
 	} else {
 		console.log(data);
-		return data;
+		return data[0];
 	}
 }
 
 export {
 	getLoginUser,
 	registerUser,
-	updateBasicInfo
+	updateBasicInfo,
+	getBasicInfo
 }

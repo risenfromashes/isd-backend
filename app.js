@@ -6,15 +6,15 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import { getLoginUser, registerUser, updateBasicInfo } from './Database/taxpayers/DB-taxpayer-api.js';
+import { getBasicInfo, getLoginUser, registerUser, updateBasicInfo } from './Database/taxpayers/DB-taxpayer-api.js';
 
 
 const app = express();
 const port = process.env.PORT || 3500;
 
 
-app.use(cookieParser())
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.use(express.static(path.join(__dirname, 'VeriTax-FrontEnd', 'build')));
@@ -48,9 +48,51 @@ app.post('/register', async (req, res) => {
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
-    res.sendStatus(400);
+    if (e.message == "Username taken") {
+      res.sendStatus(409);
+    } else {
+      res.sendStatus(400);
+    }
   }
 });
+
+app.get('/basicinfo', async (req, res) => {
+  console.log('attempting login');
+  let token = req.cookies.Token;
+  if (token == undefined || authUsers.get(token) == undefined) {
+    res.sendStatus(401);
+  } else {
+    let id = authUsers.get(token);
+    try {
+      let r = await getBasicInfo(id);
+      res.json(r);
+    } catch (e) {
+      console.log(e);
+      res.sendStatus(400);
+    }
+  }
+});
+
+app.post('/basicinfo', async (req, res) => {
+  console.log('attempting login');
+  let token = req.cookies.Token;
+  if (token == undefined || authUsers.get(token) == undefined) {
+    res.sendStatus(401);
+  } else {
+    let id = authUsers.get(token);
+    try {
+      let r = await updateBasicInfo(id, req.body.fullname, req.body.tin, req.body.nid, 
+        req.body.contactNumber, req.body.gender, req.body.dateOfBirth, req.body.presentAddress, 
+        req.body.permanentAddress, req.body.taxZone, req.body.taxCircle, req.body.maritalStatus);
+      res.json(r);
+    } catch (e) {
+      console.log(e);
+      res.sendStatus(400);
+    }
+  }
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
