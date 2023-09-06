@@ -1,0 +1,3 @@
+[submodule "VeriTax-FrontEnd"]
+	path = VeriTax-FrontEnd
+	url = https://github.com/Anonto050/VeriTax-FrontEnd.git
