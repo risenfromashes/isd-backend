@@ -2,36 +2,34 @@ import supabase from '../../config/supabaseClient.js';
 
 async function getLoginUser(username, password) {
 	// test-1
-	//username = "user1";
-	//password = "password";
+	// username = "user1";
+	// password = "password";
+	console.log({username, password});
 	const { data, error } = await supabase
 		.from('TaxPayer')
 		.select('taxPayerID,name')
 		.eq('username', username)
 		.eq('password', password)
 
-	if (error) {
+	if (error || data.length == 0) {
 		throw new Error("Tax Payer not found");
 	} else {
 		console.log(data);
-		return data;
+		return {username: data[0].name, clientID: data[0].taxPayerID};
 	}
 }
 
-async function registerUser(NID, TIN, name, dateOfBirth, taxZone, presentAddress,
-	permanentAddress, taxCircle, username, password, gender) {
+async function registerUser(username, password) {
 	// test-1
-	// NID = 76455256377383
-	// TIN = 76359891979333
-	// name = "Faria Binta Awal"
-	// dateOfBirth = "2000-09-24"
-	// taxZone = "Manikganj"
-	// presentAddress = "22, bazar mosque road, Manikganj";
-	// permanentAddress = presentAddress
-	// taxCircle = 7
-	// username = "user6"
-	// password = "123"
-	// gender = "Female"
+	let NID = 0
+	let TIN = 0
+	let name = ""
+	let dateOfBirth = "2000-01-01"
+	let taxZone = ""
+	let presentAddress = "";
+	let permanentAddress = presentAddress
+	let taxCircle = 0
+	let gender = ""
 	const { data, error } = await supabase
 		.from('TaxPayer')
 		.insert([{
@@ -77,7 +75,7 @@ async function updateBasicInfo(NID, TIN, name, dateOfBirth, taxZone, presentAddr
 	}
 }
 
-module.exports = {
+export {
 	getLoginUser,
 	registerUser,
 	updateBasicInfo
