@@ -7,3 +7,5 @@ npm run build
 
 cd ..
 
+npm install
+
