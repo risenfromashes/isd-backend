@@ -1,5 +1,24 @@
 {
   "dependencies": {
     "@supabase/supabase-js": "^2.33.1"
-  }
+  },
+  "name": "veritax",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "build": "bash ./build.sh",
+    "run": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/risenfromashes/isd-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/risenfromashes/isd-backend/issues"
+  },
+  "homepage": "https://github.com/risenfromashes/isd-backend#readme",
+  "description": ""
 }
