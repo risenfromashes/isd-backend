@@ -11,7 +11,7 @@ import { getExemptionRules } from './Database/rules/DB-exemption-rules-api.js';
 
 
 const app = express();
-const port = process.env.PORT || 3500;
+const port = process.env.PORT || 3000;
 
 
 app.use(express.json());
