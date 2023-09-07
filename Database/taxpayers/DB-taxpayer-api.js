@@ -108,9 +108,62 @@ async function updateBasicInfo(id, fullname, tin, nid, contactNumber, gender, da
 	}
 }
 
+async function getProfile(id) {
+	// test-1
+	const { data, error } = await supabase
+		.from('TaxPayer')
+		.select('NID,TIN,username,password,name,contactNumber,dateOfBirth,taxZone,presentAddress,permanentAddress,taxCircle,gender,maritalStatus')
+		.eq('taxPayerID', id)
+
+	if (error) {
+		console.log(error);
+		throw new Error("Basic info could not be fetched");
+	} else if (data.length == 0) {
+		throw new Error("No such user");
+	} else {
+		console.log(data);
+		return data[0];
+	}
+}
+
+async function updateProfile(id, fullname, tin, nid, username, password, contactNumber, gender, dateOfBirth, presentAddress,
+							   permanentAddress, taxZone, taxCircle, maritalStatus) {
+	// test-1
+	const { data, error } = await supabase
+		.from('TaxPayer')
+		.update({
+			'NID': nid,
+			'TIN': tin,
+			'name': fullname,
+			'username': username,
+			'password': password,
+			'contactNumber': contactNumber,
+			'dateOfBirth': dateOfBirth,
+			'taxZone': taxZone,
+			'presentAddress': presentAddress,
+			'permanentAddress': permanentAddress,
+			'taxCircle': taxCircle,
+			'gender': gender,
+			'maritalStatus': maritalStatus
+		})
+		.eq('taxPayerID', id)
+		.select()
+
+	if (error) {
+		console.log(error);
+		throw new Error("Basic info could not be updated");
+	} else {
+		console.log(data);
+		return data[0];
+	}
+}
+
+
 export {
 	getLoginUser,
 	registerUser,
 	updateBasicInfo,
-	getBasicInfo
+	getBasicInfo, 
+	getProfile,
+	updateProfile
 }
